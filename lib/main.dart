@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -10,52 +12,158 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginPage(),
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class LoginPage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  String page = "login";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: (page == "login")? Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          fit: StackFit.passthrough,
+          children: [
+             
+            SizedBox(height: 100),
+            SafeArea(
+                          child: Align(
+                alignment: Alignment.topCenter,
+                            child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Material(
+                                      color: Colors.transparent,        child: GestureDetector(
+                                                         onTap: (){
+                                                           setState(() {
+                                                             page = "signup";
+                                                           });
+                                                           },                                             child: Text("Sign up",
+                        style: TextStyle(fontSize: 20, color: Colors.grey[600])),
+                                              ),
+                  ),
+                ),
+              ),
+            ),
+            LoginPage(),
+          ]
+        ),
+      ): Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          fit: StackFit.passthrough,
+          children: [
+            SignUp(),
+            SafeArea(
+                          child: Align(
+                alignment: Alignment.bottomCenter,
+                            child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Material(
+                                      color: Colors.transparent,        child: GestureDetector(
+                                                         onTap: (){
+                                                           setState(() {
+                                                             page = "login";
+                                                           });
+                                                           },                                             child: Text("Log In",
+                        style: TextStyle(fontSize: 20, color: Colors.grey[600])),
+                                              ),
+                  ),
+                ),
+              ),
+            ),
+          ]
+        ),
+      )
+      
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  var _alignment = Alignment.topCenter;
+
+  double topRight = 0;
+
+  double topLeft = 0;
+
+  double bottomRight = 500;
+
+  double bottomLeft = 500;
+
+  @override
+  void initState() {
+super.initState();
+setState(() {
+  _alignment = Alignment.bottomCenter;
+  
+});
+Timer(const Duration(milliseconds: 5), () {
+      setState(() {
+        topLeft = 500;
+  topRight = 500;
+  bottomLeft = 0;
+  bottomRight = 0;
+      });
+    });
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+        fit: StackFit.passthrough,
+        children: [
+           AnimatedContainer(
+             duration: Duration(milliseconds: 10),
+             
+             alignment: _alignment,
+             child: AnimatedContainer(
+               duration: Duration(milliseconds: 10),
+                 height: MediaQuery.of(context).size.height * 4/5,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      color: Colors.pink[100],
+                      image: DecorationImage(image: NetworkImage("https://img4.goodfon.com/wallpaper/nbig/0/4d/macaroon-colorful-makaruny-sweet-macaron-french-sladkoe-d-23.jpg"), fit: BoxFit.fill),
+                      
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(bottomLeft),
+                        bottomRight: Radius.circular(bottomRight),
+                          topRight: Radius.circular(topRight),
+                          topLeft: Radius.circular(topLeft))),
+                  
+                ),
+           ),
+          Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           SizedBox(height: 100),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Hero(
-              tag: "signup",
-                          child: Material(
-                                              color: Colors.transparent,        child: GestureDetector(
-                                                                 onTap: (){
-                                                                   Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: SignUp()));
-                                                                 },                                             child: Text("Sign up",
-                  style: TextStyle(fontSize: 20, color: Colors.grey[600])),
-                                                      ),
-                          ),
-            ),
+            child: Container(),
           ),
           
           Expanded(
             child: Stack(fit: StackFit.passthrough,
           children: <Widget>[
-            Hero(
-              tag: "bg",
-                          child: Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Colors.pink[100],
-                    image: DecorationImage(image: NetworkImage("https://img4.goodfon.com/wallpaper/nbig/0/4d/macaroon-colorful-makaruny-sweet-macaron-french-sladkoe-d-23.jpg"), fit: BoxFit.fill),
-                    
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(500),
-                        topLeft: Radius.circular(500))),
-                
-              ),
-            ),
+           
             Column(
                   children: <Widget>[
                     Padding(
@@ -108,11 +216,18 @@ class LoginPage extends StatelessWidget {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(15.0),
-                            child: Material(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Material(
                                     color: Colors.transparent,                      child: Text(
                                 "Password",
                                 textAlign: TextAlign.left,
                               ),
+                            ),
+                            Icon(Icons.remove_red_eye, color: Colors.grey[400],)
+                              ],
                             ),
                           ),
                         ),
@@ -162,15 +277,74 @@ class LoginPage extends StatelessWidget {
           )
         ],
       ),
+        ]
+      
     );
   }
 }
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
+  @override
+  _SignUpState createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  var _alignment = Alignment.bottomCenter;
+
+  double topRight = 500;
+
+  double topLeft = 500;
+
+  double bottomRight = 0;
+
+  double bottomLeft = 0;
+
+  
+
+  @override
+  void initState() {
+super.initState();
+setState(() {
+  _alignment = Alignment.topCenter;
+  
+});
+Timer(const Duration(milliseconds: 5), () {
+      setState(() {
+        topLeft = 0;
+  topRight = 0;
+  bottomLeft = 500;
+  bottomRight = 500;
+      });
+    });
+
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return Stack(
+        fit: StackFit.passthrough,
+        children: [
+          AnimatedContainer(
+            duration: Duration(milliseconds: 10),
+            alignment: _alignment,
+            child: AnimatedContainer(
+                duration: Duration(milliseconds: 10),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 4/5,
+                  decoration: BoxDecoration(
+                      color: Colors.pink[100],
+                      image: DecorationImage(image: NetworkImage("https://img4.goodfon.com/wallpaper/nbig/0/4d/macaroon-colorful-makaruny-sweet-macaron-french-sladkoe-d-23.jpg"), fit: BoxFit.fill),
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(topRight),
+                        topLeft: Radius.circular(topLeft),
+                          bottomRight: Radius.circular(bottomRight),
+                          bottomLeft: Radius.circular(bottomLeft))),
+                  
+                ),
+          ),
+          Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           
@@ -178,19 +352,7 @@ class SignUp extends StatelessWidget {
           Expanded(
             child: Stack(fit: StackFit.passthrough,
           children: <Widget>[
-            Hero(
-              tag: "bg", 
-                          child: Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Colors.pink[100],
-                    image: DecorationImage(image: NetworkImage("https://img4.goodfon.com/wallpaper/nbig/0/4d/macaroon-colorful-makaruny-sweet-macaron-french-sladkoe-d-23.jpg"), fit: BoxFit.fill),
-                    borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(500),
-                        bottomLeft: Radius.circular(500))),
-                
-              ),
-            ),
+            
             Column(
                   children: <Widget>[
                     Padding(
@@ -348,21 +510,13 @@ class SignUp extends StatelessWidget {
           SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Hero(
-              tag: "login",
-                          child: Material(
-                                          color: Colors.transparent,            child: GestureDetector(
-                                                        onTap: (){
-                                                          Navigator.pop(context);
-                                                        },
-                                                                                                              child: Text("Log In",
-                  style: TextStyle(fontSize: 20, color: Colors.grey[600])),
-                                                      ),
-                          ),
-            ),
+            child: Container(),
           ),
+          
         ],
       ),
+        ]
+      
     );
   }
 }
